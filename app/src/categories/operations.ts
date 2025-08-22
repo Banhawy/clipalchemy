@@ -1,7 +1,10 @@
 import z from "zod";
 import fetch from 'node-fetch';
 import { GetVideoAnalysisResultById, type GenerateVideoAnalysis } from "wasp/server/operations";
-import { VideoAnalysis } from "wasp/entities";
+import { User, VideoAnalysis } from "wasp/entities";
+import { SubscriptionStatus } from "../payment/plans";
+import type { PrismaPromise } from '@prisma/client';
+import { HttpError, prisma } from "wasp/server";
 
 //#region Actions
 
@@ -18,6 +21,11 @@ interface AnalyzeVideoResponse {
     title: string;
     output: string;
     thumbnail_url: string;
+    ingredients?: {
+        name: string;
+        quantity: string;
+        unit: string;
+    }[];
     metadata: {
         video_url: string;
         prompt: string;
@@ -30,6 +38,11 @@ interface AnalyzeVideoResponse {
 }
 
 export const generateVideoAnalysis: GenerateVideoAnalysis<AnalyzeVideoInput, VideoAnalysis> = async (input: AnalyzeVideoInput, context: any): Promise<VideoAnalysis> => {
+    if (!isUserSubscribed(context.user)) {
+        if (context.user.credits <= 0) {
+            throw new HttpError(402, 'User has not paid or is out of credits');
+        }
+    }
     console.log('🎬 Starting video analysis for user:', context.user?.id);
     console.log('📍 Video URL:', input.videoUrl);
     console.log('🏷️ Platform:', input.platform);
@@ -117,11 +130,47 @@ export const generateVideoAnalysis: GenerateVideoAnalysis<AnalyzeVideoInput, Vid
             videoUrl: data.metadata.video_url,
             platform: input.platform,
             mimeType: data.metadata.mime_type,
+            customJsonData: data.ingredients ? data.ingredients : undefined,
+            type: input.type,
+        }
+    });
+
+    const userAnalysisRecord = context.entities.UserVideoAnalysis.create({
+        data: {
+            user: { connect: { id: context.user.id } },
+            videoAnalysis: { connect: { id: analysis.id } },
         }
     });
 
     console.log('✅ Analysis saved with ID:', analysis.id);
     console.log('🎉 Video analysis completed successfully');
+
+    const transactions: PrismaPromise<VideoAnalysis | User>[] = [userAnalysisRecord];
+
+    // We decrement the credits for users without an active subscription
+      // This way, users don't feel cheated if something goes wrong.
+      // On the flipside, users can theoretically abuse this and spend more
+      // credits than they have, but the damage should be pretty limited.
+      //
+      // Think about which option you prefer for your app and edit the code accordingly.
+      if (!isUserSubscribed(context.user)) {
+        console.log('🔒 User is not subscribed, checking credits...');
+        if (context.user.credits > 0) {
+            console.log('➖ Decrementing user credits by 1');
+          const decrementCredit = context.entities.User.update({
+            where: { id: context.user.id },
+            data: {
+              credits: {
+                decrement: 1,
+              },
+            },
+          });
+          transactions.push(decrementCredit);
+        } else {
+          throw new HttpError(402, 'User has not paid or is out of credits');
+        }
+    }
+    await prisma.$transaction(transactions);
 
     return analysis;
 };
@@ -142,5 +191,12 @@ export const getVideoAnalysisResultById: GetVideoAnalysisResultById<{ id: string
     console.log('✅ Video analysis found:', analysis);
     return analysis;
 };
+
+function isUserSubscribed(user: User) {
+  return (
+    user.subscriptionStatus === SubscriptionStatus.Active ||
+    user.subscriptionStatus === SubscriptionStatus.CancelAtPeriodEnd
+  );
+}
 
 //#endregion

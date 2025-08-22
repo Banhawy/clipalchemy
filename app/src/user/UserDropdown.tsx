@@ -1,4 +1,4 @@
-import { ChevronDown, LogOut, User } from 'lucide-react';
+import { ChevronDown, Coins, LogOut, User } from 'lucide-react';
 import { useState } from 'react';
 import { logout } from 'wasp/client/auth';
 import { Link as WaspRouterLink } from 'wasp/client/router';
@@ -26,6 +26,14 @@ export function UserDropdown({ user }: { user: Partial<UserEntity> }) {
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
+        {user.credits !== undefined && (
+          <DropdownMenuItem asChild>
+            <div className='flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary'>
+              <Coins size='1.1rem' />
+              <span>Credits: {user.credits}</span>
+            </div>
+          </DropdownMenuItem>
+        )}
         {userMenuItems.map((item) => {
           if (item.isAuthRequired && !user) return null;
           if (item.isAdminOnly && (!user || !user.isAdmin)) return null;

@@ -67,7 +67,21 @@ model VideoAnalysis {
   videoUrl                 String
   mimeType                 String
   platform                 String          // 'youtube', 'tiktok', 'instagram', etc.
+  type                     String          // 'cooking', 'maskes', 'custom', etc.
+  customJsonData           String?         // JSON data for custom analysis
 }
+
+model UserVideoAnalysis {
+  id                       String          @id @default(uuid())
+  createdAt                DateTime        @default(now())
+
+  user                      User            @relation(fields: [userId], references: [id])
+  userId                    String
+
+  videoAnalysis             VideoAnalysis   @relation(fields: [videoAnalysisId], references: [id])
+  videoAnalysisId           String
+}
+
 
 model File {
   id                        String          @id @default(uuid())
