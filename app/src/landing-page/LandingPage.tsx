@@ -24,7 +24,6 @@ export default function LandingPage() {
         <Hero />
         {/* <ExamplesCarousel examples={examples} /> */}
         {/* <AIReady /> */}
-        <RollingGallery autoplay={true} pauseOnHover={true} />
         <FeaturesGrid features={features} />
         {/* <Testimonials testimonials={testimonials} /> */}
         {/* <FAQ faqs={faqs} /> */}
