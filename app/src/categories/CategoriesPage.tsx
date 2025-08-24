@@ -21,7 +21,8 @@ const categories = [
     name: 'DIY Projects',
     description: 'Creative do-it-yourself project ideas',
     path: '/categories/diy-projects',
-    imgUrl: 'https://i.pinimg.com/originals/46/7b/40/467b400d81c2171d65c3063826328895.gif'
+    imgUrl: 'https://i.pinimg.com/originals/46/7b/40/467b400d81c2171d65c3063826328895.gif',
+    comingSoon: true,
   }
 ]
 
@@ -42,43 +43,92 @@ const CategoriesPage = () => {
         {/* Categories Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {categories.map(category => (
-            <a 
-              key={category.id} 
-              href={category.path}
-              className="group block transform transition-all duration-300 hover:scale-105"
-            >
-              <Card className="relative h-80 overflow-hidden border-0 shadow-xl hover:shadow-2xl transition-all duration-500 bg-gradient-to-br from-card to-card/80">
-                {/* Background Image with Overlay */}
-                <div 
-                  className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-700 group-hover:scale-110"
-                  style={{ backgroundImage: `url(${category.imgUrl})` }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                </div>
-                
-                {/* Content Overlay */}
-                <div className="relative z-10 h-full flex flex-col justify-end p-6 text-white">
-                  <div className="transform transition-transform duration-300 group-hover:translate-y-[-8px]">
-                    <h3 className="text-2xl font-bold mb-2 group-hover:text-primary-foreground transition-colors duration-300">
-                      {category.name}
-                    </h3>
-                    <p className="text-white/90 text-sm leading-relaxed opacity-90 group-hover:opacity-100 transition-opacity duration-300">
-                      {category.description}
-                    </p>
+            category.comingSoon ? (
+              // Coming Soon Card - No Link
+              <div 
+                key={category.id}
+                className="group block transform transition-all duration-300 hover:scale-105 cursor-not-allowed"
+              >
+                <Card className="relative h-80 overflow-hidden border-0 shadow-xl hover:shadow-2xl transition-all duration-500 bg-gradient-to-br from-card to-card/80">
+                  {/* Background Image with Overlay */}
+                  <div 
+                    className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-700 group-hover:scale-110"
+                    style={{ backgroundImage: `url(${category.imgUrl})` }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                    {/* Grayscale filter for coming soon */}
+                    <div className="absolute inset-0 bg-black/30 backdrop-grayscale group-hover:backdrop-grayscale-0 transition-all duration-500" />
                   </div>
                   
-                  {/* Hover indicator */}
-                  <div className="absolute top-4 right-4 w-8 h-8 bg-white/20 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-4 group-hover:translate-x-0">
-                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
+                  {/* Coming Soon Overlay */}
+                  <div className="absolute inset-0 bg-primary/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 z-20">
+                    <div className="text-center text-white">
+                      <div className="text-3xl font-bold mb-2">Coming Soon</div>
+                      <div className="text-sm opacity-90">This feature is under development</div>
+                    </div>
                   </div>
-                </div>
-                
-                {/* Animated border effect */}
-                <div className="absolute inset-0 border-2 border-transparent group-hover:border-primary/50 rounded-xl transition-all duration-300" />
-              </Card>
-            </a>
+                  
+                  {/* Content Overlay */}
+                  <div className="relative z-10 h-full flex flex-col justify-end p-6 text-white">
+                    <div className="transform transition-transform duration-300 group-hover:translate-y-[-8px]">
+                      <h3 className="text-2xl font-bold mb-2 group-hover:text-primary-foreground transition-colors duration-300">
+                        {category.name}
+                      </h3>
+                      <p className="text-white/90 text-sm leading-relaxed opacity-90 group-hover:opacity-100 transition-opacity duration-300">
+                        {category.description}
+                      </p>
+                    </div>
+                    
+                    {/* Coming Soon Badge */}
+                    <div className="absolute top-4 right-4 bg-yellow-500 text-black text-xs font-bold px-2 py-1 rounded-full">
+                      COMING SOON
+                    </div>
+                  </div>
+                  
+                  {/* Animated border effect */}
+                  <div className="absolute inset-0 border-2 border-transparent group-hover:border-yellow-500/50 rounded-xl transition-all duration-300" />
+                </Card>
+              </div>
+            ) : (
+              // Regular Clickable Card
+              <a 
+                key={category.id} 
+                href={category.path}
+                className="group block transform transition-all duration-300 hover:scale-105"
+              >
+                <Card className="relative h-80 overflow-hidden border-0 shadow-xl hover:shadow-2xl transition-all duration-500 bg-gradient-to-br from-card to-card/80">
+                  {/* Background Image with Overlay */}
+                  <div 
+                    className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-700 group-hover:scale-110"
+                    style={{ backgroundImage: `url(${category.imgUrl})` }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                  </div>
+                  
+                  {/* Content Overlay */}
+                  <div className="relative z-10 h-full flex flex-col justify-end p-6 text-white">
+                    <div className="transform transition-transform duration-300 group-hover:translate-y-[-8px]">
+                      <h3 className="text-2xl font-bold mb-2 group-hover:text-primary-foreground transition-colors duration-300">
+                        {category.name}
+                      </h3>
+                      <p className="text-white/90 text-sm leading-relaxed opacity-90 group-hover:opacity-100 transition-opacity duration-300">
+                        {category.description}
+                      </p>
+                    </div>
+                    
+                    {/* Hover indicator */}
+                    <div className="absolute top-4 right-4 w-8 h-8 bg-white/20 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-4 group-hover:translate-x-0">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </div>
+                  
+                  {/* Animated border effect */}
+                  <div className="absolute inset-0 border-2 border-transparent group-hover:border-primary/50 rounded-xl transition-all duration-300" />
+                </Card>
+              </a>
+            )
           ))}
         </div>
       </div>
