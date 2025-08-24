@@ -4,6 +4,7 @@ import type { NavigationItem } from './NavBar';
 
 const staticNavigationItems: NavigationItem[] = [
   { name: 'Categories', to: '/categories' },
+  { name: 'My Plan', to: routes.PricingPageRoute.to },
 ];
 
 export const marketingNavigationItems: NavigationItem[] = [

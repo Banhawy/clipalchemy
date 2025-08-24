@@ -47,6 +47,8 @@ const PricingPage = () => {
   const isUserSubscribed =
     !!user && !!user.subscriptionStatus && user.subscriptionStatus !== SubscriptionStatus.Deleted;
 
+  const doesUserHaveCredits = !!user && !!user.credits && user.credits > 0;
+
   const {
     data: customerPortalUrl,
     isLoading: isCustomerPortalUrlLoading,
@@ -109,12 +111,18 @@ const PricingPage = () => {
           </h2>
         </div>
         <p className='mx-auto mt-6 max-w-2xl text-center text-lg leading-8 text-muted-foreground'>
-          Choose between Stripe and LemonSqueezy as your payment provider. Just add your Product IDs! Try it
-          out below with test credit card number <br />
+          Whichever plan you choose, you can use the test credit card number below to complete your checkout <br />
           <span className='px-2 py-1 bg-muted rounded-md text-muted-foreground font-mono text-sm'>
             4242 4242 4242 4242 4242
           </span>
         </p>
+
+        {doesUserHaveCredits && (
+          <Alert variant='default' className='mt-8'>
+            <AlertDescription>You have {user.credits} credits available.</AlertDescription>
+          </Alert>
+        )}
+
         {errorMessage && (
           <Alert variant='destructive' className='mt-8'>
             <AlertDescription>{errorMessage}</AlertDescription>
