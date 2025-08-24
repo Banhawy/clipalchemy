@@ -161,6 +161,12 @@ page CookingRecipesPage {
   component: import CookingRecipes from "@src/categories/CookingRecipes"
 }
 
+route FaceMasksRoute { path: "/categories/face-masks", to: FaceMasksPage }
+page FaceMasksPage {
+  authRequired: true,
+  component: import FaceMasks from "@src/categories/FaceMasks"
+}
+
 route VideoAnalysisRoute { path: "/categories/video-analysis/:id", to: VideoAnalysisPage }
 page VideoAnalysisPage {
   authRequired: true,

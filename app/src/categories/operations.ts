@@ -11,7 +11,7 @@ import { HttpError, prisma } from "wasp/server";
 const analyzeVideoSchema = z.object({
     videoUrl: z.string().url(),
     platform: z.enum(["instagram", "facebook", "youtube", "tiktok"]),
-    type: z.enum(["cooking", "mask", "diy"]),
+    type: z.enum(["cooking", "face-masks", "diy"]),
 });
 
 export type AnalyzeVideoInput = z.infer<typeof analyzeVideoSchema>;
@@ -58,8 +58,8 @@ export const generateVideoAnalysis: GenerateVideoAnalysis<AnalyzeVideoInput, Vid
         case 'cooking':
             prompt = 'In markdown, Write a detailed recipe and cooking instructions in this video'
             break;
-        case 'mask':
-            prompt = 'In markdown, write the ingredients and its measurments plus benefits and instructions on how to applyfrom the mask made in this video.'
+        case 'face-masks':
+            prompt = 'In neat markdown, write the ingredients and its measurments plus benefits and instructions on how to apply from the mask made in this video.'
             break;
         case 'diy':
             prompt = 'In markdown, write a step-by-step guide for the DIY project shown in this video.'
@@ -71,6 +71,7 @@ export const generateVideoAnalysis: GenerateVideoAnalysis<AnalyzeVideoInput, Vid
     let body = {
         video_url: input.videoUrl,
         prompt: prompt,
+        type: input.type,
     }
 
     console.log('🚀 Sending request to video processing API...');
@@ -115,10 +116,12 @@ export const generateVideoAnalysis: GenerateVideoAnalysis<AnalyzeVideoInput, Vid
 
     if (existingAnalysis) {
         console.log('📂 Found existing analysis for this video URL:', existingAnalysis.id);
+        existingAnalysis.customJsonData = data.ingredients ? data.ingredients : undefined;
         return existingAnalysis;
     }
 
     console.log('💾 Saving analysis to database...');
+    
     const analysis = await context.entities.VideoAnalysis.create({
         data: {
             createdBy: { connect: { id: context.user.id } },
@@ -130,7 +133,7 @@ export const generateVideoAnalysis: GenerateVideoAnalysis<AnalyzeVideoInput, Vid
             videoUrl: data.metadata.video_url,
             platform: input.platform,
             mimeType: data.metadata.mime_type,
-            customJsonData: data.ingredients ? data.ingredients : undefined,
+            customJsonData: data.ingredients ? JSON.stringify(data.ingredients) : undefined,
             type: input.type,
         }
     });
@@ -171,6 +174,8 @@ export const generateVideoAnalysis: GenerateVideoAnalysis<AnalyzeVideoInput, Vid
         }
     }
     await prisma.$transaction(transactions);
+
+    analysis.customJsonData = data.ingredients ? data.ingredients : undefined;
 
     return analysis;
 };

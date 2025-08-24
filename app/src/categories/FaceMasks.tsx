@@ -14,7 +14,7 @@ interface ValidationResult {
     error?: string
 }
 
-const CookingRecipes = () => {
+const FaceMasks = () => {
     const [url, setUrl] = useState('')
     const [validation, setValidation] = useState<ValidationResult>({ isValid: false, platform: null })
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -68,7 +68,7 @@ const CookingRecipes = () => {
             const response = await generateVideoAnalysis({
                 videoUrl: url,
                 platform: validation.platform,
-                type: 'cooking'
+                type: 'face-masks'
             })
 
             if (response) {
@@ -129,13 +129,13 @@ const CookingRecipes = () => {
                 {/* Hero Section */}
                 <div className="text-center mb-12 mt-8">
                     <h1 className="text-5xl font-bold text-gradient-primary mb-6">
-                        Cooking Recipe Analyzer
+                        Face Mask & Beauty Analyzer
                     </h1>
                     <p className="text-xl text-muted-foreground mb-4">
-                        Transform cooking videos into step-by-step recipes
+                        Transform beauty videos into detailed skincare routines
                     </p>
                     <p className="text-muted-foreground max-w-lg mx-auto">
-                        Simply paste a link from Instagram, Facebook, YouTube, or TikTok and we'll extract the recipe for you
+                        Simply paste a link from Instagram, Facebook, YouTube, or TikTok and we'll extract ingredients, measurements, and application steps for face masks and beauty treatments.
                     </p>
                 </div>
 
@@ -167,7 +167,7 @@ const CookingRecipes = () => {
                                     {/* URL Input Section */}
                                     <div className="space-y-2">
                                         <Label htmlFor="url" className="text-lg font-medium">
-                                            Video URL
+                                            Beauty Video URL
                                         </Label>
                                         <div className="relative">
                                             <Input
@@ -175,7 +175,7 @@ const CookingRecipes = () => {
                                                 type="url"
                                                 value={url}
                                                 onChange={handleUrlChange}
-                                                placeholder="https://www.instagram.com/p/..."
+                                                placeholder="https://www.instagram.com/p/... (beauty/skincare video)"
                                                 className={`text-lg py-3 pr-12 ${url && !validation.isValid
                                                     ? 'border-destructive focus-visible:ring-destructive'
                                                     : validation.isValid
@@ -223,12 +223,12 @@ const CookingRecipes = () => {
                                                             <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
                                                             <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                                                         </div>
-                                                        <span>Analyzing Recipe...</span>
+                                                        <span>Analyzing Beauty Routine...</span>
                                                     </div>
                                                     <div className="text-xs opacity-75 mt-1">This usually takes 3-5 minutes</div>
                                                 </>
                                             ) : (
-                                                'Analyze Recipe'
+                                                'Analyze Beauty Video'
                                             )}
                                         </span>
                                         <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -258,8 +258,8 @@ const CookingRecipes = () => {
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                 </div>
-                                <h3 className="font-semibold mb-2">Thorough Analysis</h3>
-                                <p className="text-sm text-muted-foreground">Complete recipes in 3-5 minutes</p>
+                                <h3 className="font-semibold mb-2">Comprehensive Analysis</h3>
+                                <p className="text-sm text-muted-foreground">Detailed beauty routines in 3-5 minutes</p>
                             </div>
                             <div>
                                 <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-3">
@@ -268,16 +268,16 @@ const CookingRecipes = () => {
                                     </svg>
                                 </div>
                                 <h3 className="font-semibold mb-2">AI Powered</h3>
-                                <p className="text-sm text-muted-foreground">Smart ingredient recognition</p>
+                                <p className="text-sm text-muted-foreground">Smart ingredient & step recognition</p>
                             </div>
                             <div>
                                 <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-3">
                                     <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C20.832 18.477 19.246 18 17.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                                     </svg>
                                 </div>
-                                <h3 className="font-semibold mb-2">Recipe Ready</h3>
-                                <p className="text-sm text-muted-foreground">Formatted for easy cooking</p>
+                                <h3 className="font-semibold mb-2">Skincare Ready</h3>
+                                <p className="text-sm text-muted-foreground">Formatted beauty routines & tips</p>
                             </div>
                         </div>
                     </div>
@@ -287,4 +287,4 @@ const CookingRecipes = () => {
     )
 }
 
-export default CookingRecipes
+export default FaceMasks
