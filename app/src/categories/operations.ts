@@ -192,8 +192,13 @@ export const getVideoAnalysisResultById: GetVideoAnalysisResultById<{ id: string
         include: { createdBy: true }
     });
 
+    if (!analysis) {
+        console.error('❌ No video analysis found for ID:', id);
+        throw new HttpError(404, 'Video analysis not found');
+    }
 
-    console.log('✅ Video analysis found:', analysis);
+    console.log('✅ Video analysis found');
+    analysis.customJsonData = analysis.customJsonData ? JSON.parse(analysis.customJsonData) : undefined;
     return analysis;
 };
 
